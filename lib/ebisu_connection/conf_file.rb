@@ -24,7 +24,7 @@ module EbisuConnection
       end
 
       def slaves_file
-        @slaves_file || File.join(Rails.root, "config/slave.yaml")
+        @slaves_file || File.join(Padrino.root, "config/slave.yaml")
       end
 
       def check_interval
@@ -50,12 +50,12 @@ module EbisuConnection
       def get_slaves_conf
         @file_mtime = File.mtime(slaves_file)
         conf = YAML.load_file(slaves_file)
-        conf = conf[Rails.env.to_s] if conf.is_a?(Hash)
+        conf = conf[PADRINO_ENV] if conf.is_a?(Hash)
         slave_type ? conf[slave_type.to_s] : conf
       end
 
       def get_spec
-        ret = ActiveRecord::Base.configurations[Rails.env]
+        ret = ActiveRecord::Base.configurations[PADRINO_ENV]
         ret.merge(ret["slave"] || {})
       end
     end
